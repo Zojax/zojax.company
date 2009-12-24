@@ -1,0 +1,76 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   i18n_domain="zojax.company">
+
+  <!-- permissions -->
+  <permission
+     id="zojax.AddCompany"
+     title="Add company"
+     description="Allow create new companies." />
+
+  <permission
+     id="zojax.AccessCompany"
+     title="Access company"
+     description="Allow access current company." />
+
+  <zojax:permission
+     permission="zojax.AddCompany"
+     category="zojax.content.permissions.interfaces.IAddPermission" />
+
+  <!-- default company permissions -->
+  <permissions for=".interfaces.ICompany" name="company.permissions">
+    <grant permission="zojax.ModifyContent"
+	   role="group.Manager" />
+
+    <grant permission="zojax.AddComment"
+	   role="group.Member
+		 group.Manager
+		 zope.Manager" />
+
+    <denyAll permission="zojax.InviteGroupMember
+			 zojax.ModifyMembersSettings" />
+  </permissions>
+
+  <!-- 'open' company -->
+  <permissions name="company.open" title="Open company">
+    <grantAll permission="zojax.AddComment" />
+    <grantAll permission="zojax.AccessCompany" />
+  </permissions>
+
+  <!-- 'members' company -->
+  <permissions name="company.members" title="Members company">
+    <grantAll permission="zojax.AccessCompany" />
+ </permissions>
+
+  <!-- 'private' company -->
+  <permissions name="company.private" title="Private company">
+    <denyAll permission="zope.View" />
+    <grant permission="zope.View"
+	   role="zope.Manager
+		 group.Member
+		 group.Manager" />
+
+    <denyAll permission="zojax.AccessCompany" />
+    <grant permission="zojax.AccessCompany"
+	   role="zope.Manager
+		 group.Member
+		 group.Manager" />
+  </permissions>
+
+  <!-- 'secret' company -->
+  <permissions name="company.secret" title="Secret company">
+    <denyAll permission="zope.View" />
+    <grant permission="zope.View"
+	   role="zope.Manager
+		 group.Member
+		 group.Manager" />
+
+    <denyAll permission="zojax.AccessCompany" />
+    <grant permission="zojax.AccessCompany"
+	   role="zope.Manager
+		 group.Member
+		 group.Manager" />
+  </permissions>
+
+</configure>

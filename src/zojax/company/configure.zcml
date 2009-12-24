@@ -1,0 +1,22 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   i18n_domain="zojax.company">
+
+  <include file="permissions.zcml" />
+  <include file="company.zcml" />
+  <include file="workspace.zcml" />
+
+  <!-- portlets -->
+  <include package=".portlets" />
+
+  <!-- package configs -->
+  <include package=".configs" />
+
+  <!-- browser views -->
+  <include package=".browser" />
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
+
+</configure>

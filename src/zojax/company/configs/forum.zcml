@@ -1,0 +1,40 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   zcml:condition="installed zojax.forum">
+
+  <include package="zojax.forum" />
+
+  <!-- forum workspace -->
+  <registerIn registry="zojax.product.zojax-forum">
+    <adapter
+       name="forum"
+       for="..interfaces.ICompany"
+       factory="zojax.forum.workspace.ForumWorkspaceFactory" />
+  </registerIn>
+
+  <!-- default company permissions -->
+  <permissions for="..interfaces.ICompany" name="company.permissions">
+    <denyAll permission="zojax.forum.AddTopic
+			 zojax.forum.AddMessage
+			 zojax.forum.SubmitTopic
+			 zojax.forum.SubmitMessage
+			 zojax.forum.ManageMessage" />
+
+    <grant role="group.Manager zope.Manager"
+	   permission="zojax.forum.AddTopic
+		       zojax.forum.AddMessage
+		       zojax.forum.ManageMessage" />
+
+    <grant role="group.Member"
+	   permission="zojax.forum.AddTopic
+		       zojax.forum.AddMessage" />
+  </permissions>
+
+  <!-- 'open' company -->
+  <permissions name="company.open">
+    <grantAll permission="zojax.forum.AddMessage" />
+  </permissions>
+
+</configure>

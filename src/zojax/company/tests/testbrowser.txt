@@ -1,0 +1,213 @@
+=======
+Company
+=======
+
+  >>> from zope import component, interface, event
+  >>> from zope.interface.verify import verifyClass, verifyObject
+  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.component.hooks import setSite
+  >>> from zope.app.testing.functional import getRootFolder
+  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.security.management import newInteraction, endInteraction
+  >>> from zope.lifecycleevent import ObjectCreatedEvent
+  >>> from zope.publisher.browser import TestRequest
+  >>> from zojax.company.tests.content import Portal
+  >>> from zojax.company import interfaces
+
+  >>> root = getRootFolder()
+  >>> setSite(root)
+  >>> sm = root.getSiteManager()
+
+  >>> actor = Browser()
+  >>> actor.addHeader("Authorization", "Basic mgr:mgrpw")
+  >>> actor.handleErrors = False
+
+
+Companies management
+====================
+
+
+Companies workspace
+-------------------
+
+  >>> actor.open("http://localhost/portal/context.html/content/")
+  >>> actor.getLink('Workspaces').click()
+  >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = [
+  ...     'companies', 'people']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+
+  >>> actor.open("http://localhost/portal/companies/")
+  >>> print actor.contents
+  <html>
+  ...
+  ...<h1>Companies</h1>
+  <div class="z-page-description"></div>
+  <div>
+     No companies have been created.
+  </div>
+  ...
+  </html>
+
+
+Add company
+-----------
+
+  >>> actor.open("http://localhost/portal/companies/")
+  >>> actor.getLink('Add Company').click()
+  >>> actor.getControl('Title').value = u'Company'
+  >>> actor.getControl('Short Name').value = u'company'
+  >>> actor.getControl('Publish').click()
+
+  >>> actor.url
+  'http://localhost/portal/companies/company/'
+
+  >>> print actor.contents
+  <html>
+  ...
+  <h1>Company</h1>
+  ...
+  </html>
+
+
+  >>> company = root['portal']['companies']['company']
+
+  >>> verifyObject(interfaces.ICompany, company)
+  True
+
+  >>> list(company.members.principals)
+  [u'zope.mgr']
+
+  >>> list(company.members.managers)
+  ['zope.mgr']
+
+
+  >>> member = company.members['zope.mgr']
+
+  >>> member.title
+  u'Manager'
+
+  >>> member.principal
+  <...principalregistry.Principal ...>
+
+
+Edit company
+------------
+
+  >>> actor.getLink('Edit Company').click()
+  >>> actor.open('http://localhost/portal/companies/company/context.html/content/')
+  >>> actor.getControl('Title').value = u'Development Company'
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+  >>> actor.getLink('View').click()
+  >>> print actor.contents
+  <html>
+  ...
+  <h1>Development Company</h1>
+  ...
+  </html>
+
+
+Browse companies
+----------------
+
+  >>> actor.open('http://localhost/portal/companies/')
+  >>> print actor.contents
+  <html>
+  ...
+  <div class="groups-manager">
+    <div class="groups-group even">
+       <dl>
+          <dt>
+             <a href="http://localhost/portal/companies/company/"
+                title="Development Company">
+               <img src="http://localhost/@@/groupEmptyImage.png" />
+             </a>
+          </dt>
+          <dd>
+            <h4>
+              <a href="http://localhost/portal/companies/company/"
+                 title="">Development Company</a>
+            </h4>
+            <div class="groups-group-description"></div>
+            <div class="groups-group-byline">
+              1 Member(s),
+              Created on
+              ...
+              <br />
+              Open Company
+            </div>
+          </dd>
+        </dl>
+        <div class="visualClear"></div>
+     </div>
+  </div>
+  ...
+  </html>
+
+  >>> actor.getControl('Search for a company').click()
+  >>> print actor.contents
+  <html>
+  ...Please enter one or more words for search...
+  </html>
+
+  >>> actor.getControl(name="form.searchText").value = u'Development'
+  >>> actor.getControl('Search for a company').click()
+  >>> print actor.contents
+  <html>
+  ...
+  <div class="groups-manager">
+    <div class="groups-group even">
+      <dl>
+        <dt>
+          <a href="http://localhost/portal/companies/company/"
+             title="Development Company">
+            <img src="http://localhost/@@/groupEmptyImage.png" />
+          </a>
+        </dt>
+        <dd>
+          <h4>
+            <a href="http://localhost/portal/companies/company/"
+            title="">Development Company</a>
+          </h4>
+          <div class="groups-group-description"></div>
+          <div class="groups-group-byline">
+            1 Member(s),
+            Created on
+            ...
+            <br />
+            Open Company
+          </div>
+        </dd>
+      </dl>
+      <div class="visualClear"></div>
+    </div>
+  </div>
+  ...
+  </html>
+
+  >>> actor.getControl(name="form.searchText").value = u'unknown'
+  >>> actor.getControl('Search for a company').click()
+  >>> print actor.contents
+  <html>
+  ...No companies have been created...
+  </html>
+
+
+Remove company
+--------------
+
+  >>> actor.open('http://localhost/portal/companies/company/')
+
+  >>> actor.getLink('Delete Company').click()
+  >>> actor.getControl('Delete').click()
+
+
+Remove groups
+-------------
+
+  >>> actor.open("http://localhost/portal/context.html/content/")
+  >>> actor.getLink('Workspaces').click()
+  >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = ['people']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+ 
+  >>> setSite(None)
+

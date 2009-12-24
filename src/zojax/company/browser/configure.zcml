@@ -1,0 +1,72 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zojax.company">
+
+  <!-- browse companies -->
+  <browser:defaultView
+     name="index.html"
+     for="..interfaces.ICompanies" />
+
+  <zojax:pagelet
+     name="index.html"
+     for="..interfaces.ICompanies"
+     template="browse.pt"
+     class=".browse.BrowseCompanies"
+     permission="zope.View" />
+
+  <!-- space view -->
+  <browser:defaultView
+     name="index.html"
+     for="..interfaces.ICompany" />
+
+  <zojax:pagelet
+     name="index.html"
+     for="..interfaces.ICompany"
+     layout="portal"
+     template="company.pt"
+     class=".company.CompanyView"
+     permission="zope.View" />
+
+  <!-- overview workspace -->
+  <zojax:pagelet
+     name="overview"
+     for="..interfaces.ICompany"
+     template="overview.pt"
+     provides="zojax.content.space.interfaces.IOverviewWorkspace"
+     permission="zojax.AccessCompany" />
+
+  <!-- icons -->
+  <browser:icon
+     name="zmi_icon"
+     for="zojax.content.content_company"
+     file="icons/company.png" />
+
+  <browser:icon
+     name="zmi_icon"
+     for="zojax.content.workspace_companies"
+     file="icons/company.png" />
+
+  <browser:icon
+     name="zmi_icon"
+     for="..interfaces.ICompany"
+     file="icons/company.png" />
+
+  <browser:icon
+     name="zmi_icon"
+     for="..interfaces.ICompanies"
+     file="icons/company.png" />
+
+  <browser:icon
+     name="zmi_icon"
+     for="..interfaces.ICompaniesFactory"
+     file="icons/company.png" />
+
+  <!-- styles -->
+  <zojax:resourceinclude
+     name="zojax-companies.css"
+     file="styles.css"
+     library="zojax" type="stylesheet" filetype="zrt" />
+
+</configure>

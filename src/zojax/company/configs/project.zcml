@@ -1,0 +1,40 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   zcml:condition="installed zojax.project">
+
+  <adapter
+     name="projects"
+     for="zojax.company.interfaces.ICompany"
+     factory="zojax.project.workspace.GroupProjectsWorkspaceFactory" />
+
+  <!-- tasks notifications -->
+  <adapter 
+     name="tasks"
+     for="zojax.company.interfaces.ICompany"
+     factory="zojax.project.notifications.notifications.TasksNotification" />
+
+  <adapter
+     name="assigneetasks"
+     for="zojax.company.interfaces.ICompany"
+     factory="zojax.project.notifications.notifications.AssigneeTasksNotification" />
+
+  <adapter 
+     name="milestones"
+     for="zojax.company.interfaces.ICompany"
+     factory="zojax.project.notifications.notifications.MilestonesNotification" />
+
+  <!-- default company permissions -->
+  <permissions for="..interfaces.ICompany" name="company.permissions">
+    <denyAll permission="zojax.AddProject" />
+    <denyAll permission="zojax.SubmitProject" />
+    <grant
+       role="group.Manager"
+       permission="zojax.AddProject" />
+    <grant
+       role="group.Member"
+       permission="zojax.SubmitProject" />
+  </permissions>
+
+</configure>

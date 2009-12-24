@@ -1,0 +1,105 @@
+==================
+Company workspaces
+==================
+
+  >>> from zope import component, interface, event
+  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.component.hooks import setSite
+  >>> from zope.app.testing.functional import getRootFolder
+  >>> from zope.security.management import newInteraction, endInteraction
+  >>> from zojax.company.tests.content import Portal
+  >>> from zojax.company import interfaces
+
+  >>> root = getRootFolder()
+  >>> setSite(root)
+  >>> sm = root.getSiteManager()
+
+  >>> actor = Browser()
+  >>> actor.addHeader("Authorization", "Basic mgr:mgrpw")
+  >>> actor.handleErrors = False
+
+  >>> actor.open("http://localhost/settings/")
+  >>> actor.getLink('Products management').click()
+  >>> actor.getControl(name='availproducts:list').value = [
+  ...     'zojax-contenttypes', 'blogger', 'zojax-forum']
+  >>> actor.getControl(name='install').click()
+
+  >>> actor.open("http://localhost/portal/context.html/content/")
+  >>> actor.getLink('Workspaces').click()
+  >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = [
+  ...     'companies', 'people']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+  >>> actor.open("http://localhost/portal/companies/")
+  >>> actor.getLink('Add Company').click()
+  >>> actor.getControl('Title').value = u'Company'
+  >>> actor.getControl('Short Name').value = u'company'
+  >>> actor.getControl('Publish').click()
+
+  >>> user1 = Browser()
+  >>> user1.addHeader("Authorization", "Basic user1:user1pw")
+  >>> user1.handleErrors = False
+  >>> user1.open('http://localhost/portal/companies/')
+
+  >>> user2 = Browser()
+  >>> user2.addHeader("Authorization", "Basic user2:user2pw")
+  >>> user2.handleErrors = False
+  >>> user2.open('http://localhost/portal/companies/')
+
+  >>> user3 = Browser()
+  >>> user3.addHeader("Authorization", "Basic user3:user3pw")
+  >>> user3.handleErrors = False
+  >>> user3.open('http://localhost/portal/companies/')
+
+
+  >>> actor.getLink('Members').click()
+  >>> actor.getLink('Manage members').click()
+  >>> actor.getLink('Add members').click()
+  >>> actor.getControl(name="principal.users:list").value = [
+  ...     'zope.user1', 'zope.user2']
+  >>> actor.getControl('Add Members').click()
+  >>> actor.getLink('Members').click()
+  >>> actor.getLink('Manage members').click()
+  >>> actor.getControl(name="table.members.ids:list").value = ['zope.user1']
+  >>> actor.getControl('Change to manager role').click()
+
+  >>> actor.open("http://localhost/portal/companies/company/context.html/content/")
+  >>> actor.getControl(name="form.widgets.type:list").value = ['open']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+
+  >>> actor.getLink('Workspaces').click()
+  >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = [
+  ...     'blog', 'forum', 'projects', 'documents', 'news', 'wiki']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+
+
+  >>> actor.open('http://localhost/portal/companies/company/')
+
+  >>> print actor.contents
+  <html>
+  ...href="http://localhost/portal/companies/company/members/"...
+  ...href="http://localhost/portal/companies/company/news/"...
+  ...href="http://localhost/portal/companies/company/documents/"...
+  ...href="http://localhost/portal/companies/company/blog/"...
+  ...href="http://localhost/portal/companies/company/forum/"...
+  ...href="http://localhost/portal/companies/company/wiki/"...
+  ...href="http://localhost/portal/companies/company/projects/"...
+  </html>
+
+
+Open company
+------------
+
+Anybody can add comments, new content only by company managers and members
+
+  >>> user1.open('http://localhost/portal/companies/company/listing.html')
+  >>> print user1.contents
+  <html>
+  ...Add Blog post...
+  ...Add Discussion...
+  ...Add Document...
+  ...Add Documents folder...
+  ...Add Project...
+  ...Add Wiki...
+  </html>
+
+  >>> user1.getLink('Add Wiki').click()
