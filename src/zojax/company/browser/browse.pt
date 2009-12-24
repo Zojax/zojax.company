@@ -1,0 +1,63 @@
+<tal:block i18n:domain="zojax.company" tal:define="hasGroups view/hasGroups">
+  <h1 i18n:translate="">Companies</h1>
+  <div class="z-page-description" tal:content="context/description"></div>
+
+  <div tal:condition="not:hasGroups" i18n:translate="">
+    No companies have been created.
+  </div>
+
+  <form action="index.html" method="post" tal:condition="hasGroups">
+    <input type="text" name="form.searchText" 
+	   tal:attributes="value request/form.searchText|nothing" />
+    <input type="submit" class="z-form-button"
+	   name="form.search" value="Search for a company" />
+    <input type="submit" class="z-form-cancelbutton"
+	   name="form.search.clear" value="Clear"
+	   tal:condition="request/form.searchText|nothing" />
+  </form>
+
+  <div class="groups-manager" tal:condition="hasGroups">
+    <tal:block content="structure view/batch/@@pagelet/batch.view" />
+    
+    <tal:block tal:repeat="uid view/batch"
+	       tal:define="url context/@@absolute_url">
+      <div class="groups-group"
+	   tal:define="info python:view.getGroupInfo(uid);
+		       userurl string:$url/${uid/__name__}"
+	   tal:condition="info"
+	   tal:attributes="class python:repeat['uid'].odd() 
+			   and 'groups-group odd' or 'groups-group even'">
+	<dl>
+	  <dt>
+	    <a tal:attributes="href string:$userurl/; title info/title">
+	      <img tal:condition="info/default"
+		   tal:attributes="src context/++resource++groupEmptyImage.png" />
+	      <img tal:condition="not:info/default"
+		   tal:attributes="src string:$userurl/++attribute++logo" />
+	    </a>
+	  </dt>
+	  <dd>
+	    <h4>
+	      <a tal:attributes="href string:$userurl/; title info/description"
+		 tal:content="info/title"></a>
+	    </h4>
+	    <div class="groups-group-description" tal:content="info/description"></div>
+	    <div class="groups-group-byline">
+	      <tal:block content="info/members"/> Member(s),
+	      Created on
+	      <tal:block content="structure formatter:date,medium:info/created" />
+	      <tal:block condition="not:info/created">Unknown</tal:block>
+	      <br />
+	      <tal:block content="info/type/title" />
+	    </div>
+	  </dd>
+	</dl>
+	<div class="visualClear"></div>
+      </div>
+    </tal:block>
+    
+    <tal:block condition="not:view/batch">
+      No companies have been created
+    </tal:block>
+  </div>
+</tal:block>

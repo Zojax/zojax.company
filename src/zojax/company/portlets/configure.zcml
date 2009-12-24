@@ -1,0 +1,74 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zojax.company">
+
+  <!-- companies portlet managers -->
+  <zojax:portletManager
+     name="columns.left"
+     for="..interfaces.ICompanies"
+     title="Companies workspace left column"
+     schema=".interfaces.ICompaniesLeftPortletManager"
+     class="zojax.portlet.manager.PortletManagerWithStatus" />
+
+  <zojax:portletManager
+     name="columns.right"
+     for="..interfaces.ICompanies"
+     title="Companies workspace right column"
+     schema=".interfaces.ICompaniesRightPortletManager"
+     class="zojax.portlet.manager.PortletManagerWithStatus" />
+
+  <!-- company portlet managers -->
+  <zojax:portletManager
+     name="columns.left"
+     for="..interfaces.ICompany"
+     title="Company left column"
+     schema=".interfaces.ICompanyLeftPortletManager"
+     class="zojax.portlet.manager.PortletManagerWithStatus" />
+
+  <zojax:portletManager
+     name="columns.right"
+     for="..interfaces.ICompany"
+     title="Company right column"
+     schema=".interfaces.ICompanyRightPortletManager"
+     class="zojax.portlet.manager.PortletManagerWithStatus" />
+
+  <!-- central column portlets -->
+  <zojax:portletManager
+     name="columns.content"
+     title="Company content column"
+     for="..interfaces.ICompany"
+     schema=".interfaces.ICompanyContentPortletManager"
+     provides="zojax.content.space.portlets.interfaces.IContentPortletsManager"
+     class="zojax.portlet.manager.PortletManagerWithStatus" />
+
+  <!-- company overview portlet -->
+  <zojax:portlet
+     title="Company overview"
+     for="..interfaces.ICompany"
+     name="portlet.companyoverview"
+     description="Basic company information (logo, members, type, etc)."
+     class=".overview.CompanyOverviewPortlet"
+     schema=".interfaces.ICompanyOverviewPortlet" />
+
+  <zojax:pagelet
+     type="portlet.view"
+     template="overview.pt"
+     for=".interfaces.ICompanyOverviewPortlet" />
+
+  <!-- company overview portlet -->
+  <zojax:portlet
+     title="Company overview"
+     name="portlet.companyoverview"
+     description="Basic company information (logo, members, type, etc)."
+     class=".overview.CompanyOverviewPortlet"
+     manager="zojax.content.space.portlets.interfaces.IContentPortletsManager"
+     schema=".interfaces.ICompanyOverviewContentPortlet" />
+
+  <zojax:pagelet
+     type="portlet.view"
+     template="overviewcontent.pt"
+     for=".interfaces.ICompanyOverviewContentPortlet" />
+
+</configure>

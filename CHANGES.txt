@@ -1,0 +1,52 @@
+=======
+CHANGES
+=======
+
+0.2.5 (Unreleased)
+------------------
+
+
+0.2.4 (2009-09-14)
+------------------
+
+- Update tests
+
+
+0.2.3 (2009-08-27)
+------------------
+
+- Update tests
+
+
+0.2.2 (2009-08-21)
+------------------
+
+- Added workspaces management support
+
+
+0.2.1 (2009-08-13)
+------------------
+
+- Update tests
+
+
+0.2.0 (2009-06-26)
+------------------
+
+- Added company logo
+
+- Show companies title for workspace tab
+
+- Added wiki support
+
+- Added news support
+
+- Portlet managers change to with status
+
+- Copyright changed to 'Zope Foundation and Contributors'
+
+
+0.1.0 (2009-05-05)
+------------------
+
+- Initial release

@@ -1,0 +1,69 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   i18n_domain="zojax.company">
+
+  <zojax:content
+     title="Company"
+     name="content.company"
+     description="Company"
+     schema=".interfaces.ICompany"
+     class=".company.Company"
+     containers="workspace.companies"
+     contains="zojax.content.space.interfaces.ISpaceContentType"
+     permission="zojax.AddCompany" />
+
+  <class class=".company.Company">
+    <implements interface="zojax.activity.interfaces.IActivityAware" />
+    <implements interface="zojax.ownership.interfaces.IOwnerAware" />
+    <implements interface="zojax.extensions.interfaces.IExtensible" />
+    <implements interface="zojax.catalog.interfaces.ISearchContext" />
+    <implements interface="zojax.content.type.interfaces.ITitleBasedName" />
+    <implements interface="zojax.content.type.interfaces.ISearchableContent" />
+    <implements
+       interface="zojax.content.type.interfaces.IContainerContentsAware" />
+    <implements interface="zojax.content.space.interfaces.IContentSpace" />
+    <implements interface="zojax.content.space.interfaces.IContentSpaceLayout" />
+    <implements interface="zojax.content.tagging.interfaces.IContentTaggable" />
+    <implements
+       interface="zojax.content.draft.browser.interfaces.ILocationContainer" />
+
+    <require
+       permission="zope.View"
+       interface=".interfaces.ICompany
+		  zojax.content.space.interfaces.IContentSpaceLayout
+		  zojax.content.space.interfaces.IWorkspacesManagement" />
+
+    <require
+       permission="zojax.AccessCompany"
+       interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require
+       permission="zojax.ModifyContent"
+       set_schema=".interfaces.ICompany
+		   zojax.content.space.interfaces.IContentSpaceLayout
+		   zojax.content.space.interfaces.IWorkspacesManagement"
+       interface="zope.app.container.interfaces.IWriteContainer" />
+  </class>
+
+  <subscriber handler=".company.companyModified" />
+
+  <adapter factory=".company.CompanySearchableText" />
+
+  <!-- draft -->
+  <zojax:draft
+     content="content.company"
+     publish="zojax.AddCompany" />
+
+  <!-- overview workspace -->
+  <adapter
+     name="overview"
+     factory=".overview.OverviewWorkspaceFactory" />
+
+  <class class=".overview.OverviewWorkspaceFactory">
+    <require
+       permission="zope.View"
+       interface="zojax.content.space.interfaces.IOverviewWorkspace" />
+  </class>
+
+</configure>

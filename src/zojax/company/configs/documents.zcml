@@ -1,0 +1,25 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   zcml:condition="installed zojax.content.documents">
+
+  <include package="zojax.content.documents" file="permissions.zcml" />
+  
+  <!-- documents workspace factory for company -->
+  <adapter
+     name="documents"
+     for="..interfaces.ICompany"
+     factory="zojax.content.documents.workspace.DocumentsFactory" />
+
+  <!-- default company permissions -->
+  <permissions for="..interfaces.ICompany" name="company.permissions">
+    <denyAll permission="zojax.AddDocuments" />
+    <denyAll permission="zojax.SubmitDocuments" />
+    <grant role="group.Manager
+		 group.Member
+		 zope.Manager"
+	   permission="zojax.AddDocuments" />
+  </permissions>
+
+</configure>
