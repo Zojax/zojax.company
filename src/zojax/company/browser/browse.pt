@@ -1,6 +1,34 @@
 <tal:block i18n:domain="zojax.company" tal:define="hasGroups view/hasGroups">
-  <h1 i18n:translate="">Companies</h1>
+  <h1 i18n:translate="" tal:content="context/title">Companies</h1>
   <div class="z-page-description" tal:content="context/description"></div>
+
+  <div tal:condition="view/folders" i18n:translate="">
+    <tal:block tal:repeat="folder view/folders">
+      <div class="groups-group"
+     tal:attributes="class python:repeat['folder'].odd() 
+         and 'groups-group odd' or 'groups-group even'">
+        <dl>
+          <dt>
+            <a tal:attributes="href string:${folder/@@absolute_url}/; title folder/title">
+              <img tal:attributes="src context/++resource++companiesFolderEmptyImage.png" />
+            </a>
+          </dt>
+          <dd>
+            <h4>
+              <a tal:attributes="href string:${folder/@@absolute_url}/; title folder/description"
+           tal:content="folder/title"></a>
+            </h4>
+            <div class="groups-group-description" tal:content="folder/description"></div>
+            <div class="groups-group-byline">
+              <tal:block content="python:len(folder)"/> Company(s)</div>
+          </dd>
+        </dl>
+        <div class="visualClear"></div>
+      </div>
+    </tal:block>
+  </div>
+  
+  <tal:block condition="not:view/folders">
 
   <div tal:condition="not:hasGroups" i18n:translate="">
     No companies have been created.
@@ -60,4 +88,5 @@
       No companies have been created
     </tal:block>
   </div>
+  </tal:block>
 </tal:block>

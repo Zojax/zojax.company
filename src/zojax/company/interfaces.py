@@ -68,8 +68,12 @@ class ICompany(ISpace):
 
 
 class ICompanies(IItem, IWorkspace):
-    """ companies container """
+    """ companies workspace """
+    
 
+class ICompaniesContainer(IItem):
+    """ companies container """
+    
 
 class ICompaniesFactory(IWorkspaceFactory):
     """ companies workspace factory """

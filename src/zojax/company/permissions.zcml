@@ -8,6 +8,11 @@
      id="zojax.AddCompany"
      title="Add company"
      description="Allow create new companies." />
+     
+  <permission
+     id="zojax.AddCompaniesContainer"
+     title="Add companies folder"
+     description="Allow create new companies folders." />
 
   <permission
      id="zojax.AccessCompany"
@@ -16,6 +21,10 @@
 
   <zojax:permission
      permission="zojax.AddCompany"
+     category="zojax.content.permissions.interfaces.IAddPermission" />
+     
+  <zojax:permission
+     permission="zojax.AddCompaniesContainer"
      category="zojax.content.permissions.interfaces.IAddPermission" />
 
   <!-- default company permissions -->

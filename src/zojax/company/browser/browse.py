@@ -32,6 +32,8 @@ from zojax.company.types import types
 class BrowseCompanies(object):
 
     batch = Batch((), 15)
+    folders = []
+    hasGroups = False
 
     def update(self):
         context = self.context
@@ -70,6 +72,10 @@ class BrowseCompanies(object):
 
         results = catalog.searchResults(
             type = {'any_of': ('content.company',)},
+            searchContext = (context,), sort_on='title')
+        
+        self.folders = catalog.searchResults(
+            type = {'any_of': ('companies.folder',)},
             searchContext = (context,), sort_on='title')
 
         if not results:

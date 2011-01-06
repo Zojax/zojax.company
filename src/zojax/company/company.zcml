@@ -9,7 +9,7 @@
      description="Company"
      schema=".interfaces.ICompany"
      class=".company.Company"
-     containers="workspace.companies"
+     containers="workspace.companies companies.folder"
      contains="zojax.content.space.interfaces.ISpaceContentType"
      permission="zojax.AddCompany" />
 

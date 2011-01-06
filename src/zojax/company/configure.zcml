@@ -5,6 +5,7 @@
 
   <include file="permissions.zcml" />
   <include file="company.zcml" />
+  <include file="container.zcml" />
   <include file="workspace.zcml" />
 
   <!-- portlets -->

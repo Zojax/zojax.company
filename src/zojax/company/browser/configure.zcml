@@ -8,10 +8,22 @@
   <browser:defaultView
      name="index.html"
      for="..interfaces.ICompanies" />
+     
+  <!-- browse companies -->
+  <browser:defaultView
+     name="index.html"
+     for="..interfaces.ICompaniesContainer" />
 
   <zojax:pagelet
      name="index.html"
      for="..interfaces.ICompanies"
+     template="browse.pt"
+     class=".browse.BrowseCompanies"
+     permission="zope.View" />
+     
+  <zojax:pagelet
+     name="index.html"
+     for="..interfaces.ICompaniesContainer"
      template="browse.pt"
      class=".browse.BrowseCompanies"
      permission="zope.View" />
@@ -42,6 +54,11 @@
      name="zmi_icon"
      for="zojax.content.content_company"
      file="icons/company.png" />
+  
+  <browser:icon
+     name="zmi_icon"
+     for="zojax.content.companies_folder"
+     file="icons/companies.png" />
 
   <browser:icon
      name="zmi_icon"
@@ -52,16 +69,24 @@
      name="zmi_icon"
      for="..interfaces.ICompany"
      file="icons/company.png" />
+     
+  <browser:icon
+     name="zmi_icon"
+     for="..interfaces.ICompaniesContainer"
+     file="icons/companies.png" />
 
   <browser:icon
      name="zmi_icon"
      for="..interfaces.ICompanies"
-     file="icons/company.png" />
+     file="icons/companies.png" />
 
   <browser:icon
      name="zmi_icon"
      for="..interfaces.ICompaniesFactory"
-     file="icons/company.png" />
+     file="icons/companies.png" />
+
+  <browser:resource
+     name="companiesFolderEmptyImage.png" file="icons/groupsImage.png" />
 
   <!-- styles -->
   <zojax:resourceinclude
