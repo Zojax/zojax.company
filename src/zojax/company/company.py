@@ -54,7 +54,7 @@ class Company(ContentContainer):
 
     @property
     def members(self):
-        return self['members']
+        return self.get('members')
 
     def isEnabled(self, workspaceFactory):
         if workspaceFactory.name == 'members':
