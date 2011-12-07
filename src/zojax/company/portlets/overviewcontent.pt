@@ -1,4 +1,4 @@
-<div class="z-portlet portlet-group-overview-content" i18n:domain="zojax.project">
+<div class="z-portlet portlet-group-overview-content" i18n:domain="zojax.company">
   <div class="z-portlet-body" tal:define="info context/getProjectInfo">
     <div class="group-image" tal:condition="context/showLogo">
       <div class="group-image-wrapper">
