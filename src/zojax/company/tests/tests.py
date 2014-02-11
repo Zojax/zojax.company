@@ -123,6 +123,5 @@ def FunctionalDocFileSuite(*paths, **kw):
 
 def test_suite():
     return unittest.TestSuite((
-            FunctionalDocFileSuite("./workspace.txt"),
             FunctionalDocFileSuite("./testbrowser.txt"),
             ))

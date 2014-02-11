@@ -48,7 +48,6 @@ Companies workspace
   ...
   </html>
 
-
 Add company
 -----------
 
@@ -113,76 +112,12 @@ Browse companies
   >>> print actor.contents
   <html>
   ...
-  <div class="groups-manager">
-    <div class="groups-group even">
-       <dl>
-          <dt>
-             <a href="http://localhost/portal/companies/company/"
-                title="Development Company">
-               <img src="http://localhost/@@/groupEmptyImage.png" />
-             </a>
-          </dt>
-          <dd>
-            <h4>
-              <a href="http://localhost/portal/companies/company/"
-                 title="">Development Company</a>
-            </h4>
-            <div class="groups-group-description"></div>
-            <div class="groups-group-byline">
-              1 Member(s),
-              Created on
-              ...
-              <br />
-              Open Company
-            </div>
-          </dd>
-        </dl>
-        <div class="visualClear"></div>
-     </div>
-  </div>
+  ...<a href="http://localhost/portal/companies/company/" title="">Development Company</a>
+  ...1 Member(s),
+  ...Created on
+  ...Open Company
   ...
-  </html>
-
-  >>> actor.getControl('Search for a company').click()
-  >>> print actor.contents
-  <html>
-  ...Please enter one or more words for search...
-  </html>
-
-  >>> actor.getControl(name="form.searchText").value = u'Development'
-  >>> actor.getControl('Search for a company').click()
-  >>> print actor.contents
-  <html>
-  ...
-  <div class="groups-manager">
-    <div class="groups-group even">
-      <dl>
-        <dt>
-          <a href="http://localhost/portal/companies/company/"
-             title="Development Company">
-            <img src="http://localhost/@@/groupEmptyImage.png" />
-          </a>
-        </dt>
-        <dd>
-          <h4>
-            <a href="http://localhost/portal/companies/company/"
-            title="">Development Company</a>
-          </h4>
-          <div class="groups-group-description"></div>
-          <div class="groups-group-byline">
-            1 Member(s),
-            Created on
-            ...
-            <br />
-            Open Company
-          </div>
-        </dd>
-      </dl>
-      <div class="visualClear"></div>
-    </div>
-  </div>
-  ...
-  </html>
+    </html>
 
   >>> actor.getControl(name="form.searchText").value = u'unknown'
   >>> actor.getControl('Search for a company').click()
@@ -208,6 +143,144 @@ Remove groups
   >>> actor.getLink('Workspaces').click()
   >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = ['people']
   >>> actor.getControl(name="content.edit.buttons.save").click()
- 
-  >>> setSite(None)
 
+
+==================
+Company workspaces
+==================
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.testing.functional import getRootFolder
+  >>> from zope.app.component.hooks import setSite
+  >>> from zojax.authentication.interfaces import IAuthenticationConfiglet
+  >>> from zojax.authentication.interfaces import IAuthenticatorPluginFactory
+  >>> from zojax.principal.users.principal import Principal
+  >>> from zojax.principal.users.interfaces import IUsersPlugin
+  >>> from zojax.principal.password.interfaces import IPasswordTool
+  >>> from zope.securitypolicy import interfaces
+
+  >>> root = getRootFolder()
+  >>> setSite(root)
+  >>> sm = root.getSiteManager()
+
+  >>> authconfiglet = sm.getUtility(IAuthenticationConfiglet)
+  >>> authconfiglet.installUtility()
+
+  >>> authfactory = sm.getUtility(IAuthenticatorPluginFactory, name='principal.users')
+  >>> authfactory.install()
+  >>> authfactory.activate()
+
+  >>> password = sm.getUtility(IPasswordTool).encodePassword('12345')
+
+  >>> users = sm.getUtility(IUsersPlugin)
+  >>> users['01'] = Principal('user1@zojax.net' '', 'User', '')
+  >>> users['01'].lastname = '1'
+  >>> users['01'].password = password
+  >>> users['02'] = Principal('user2@zojax.net' '', 'User', '')
+  >>> users['02'].lastname = '2'
+  >>> users['02'].password = password
+  >>> users['03'] = Principal('user3@zojax.net' '', 'User', '')
+  >>> users['03'].lastname = '3'
+  >>> users['03'].password = password
+
+  >>> roleper = interfaces.IPrincipalPermissionManager(root['portal'])
+  >>> roleper.grantPermissionToPrincipal('zope.app.dublincore.view','zojax.pf01')
+
+  >>> actor = Browser()
+  >>> actor.addHeader("Authorization", "Basic mgr:mgrpw")
+  >>> actor.handleErrors = False
+
+  >>> actor.open("http://localhost/settings/")
+  >>> actor.getLink('Products management').click()
+  >>> actor.getControl(name='availproducts:list').value = [
+  ...     'zojax-contenttypes', 'blogger', 'zojax-forum']
+  >>> actor.getControl(name='install').click()
+
+  >>> actor.open("http://localhost/portal/context.html/content/")
+  >>> actor.getLink('Workspaces').click()
+  >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = [
+  ...     'companies', 'people']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+  >>> actor.open("http://localhost/portal/companies/")
+  >>> actor.getLink('Add Company').click()
+  >>> actor.getControl('Title').value = u'Company'
+  >>> actor.getControl('Short Name').value = u'company'
+  >>> actor.getControl('Publish').click()
+
+  >>> user1 = Browser()
+  >>> user1.handleErrors = False
+  >>> user1.open("http://localhost/login.html")
+  >>> user1.getControl('Login Name').value = 'user1@zojax.net'
+  >>> user1.getControl('Password').value = '12345'
+  >>> user1.getControl('Log in').click()
+
+  >>> user2 = Browser()
+  >>> user2.addHeader("Authorization", "Basic user2:user2pw")
+  >>> user2.handleErrors = False
+  >>> user2.open('http://localhost/portal/companies/')
+
+  >>> user3 = Browser()
+  >>> user3.addHeader("Authorization", "Basic user3:user3pw")
+  >>> user3.handleErrors = False
+  >>> user3.open('http://localhost/portal/companies/')
+
+
+  >>> actor.getLink('Members').click()
+  >>> actor.getLink('Manage members').click()
+  >>> actor.getLink('Add members').click()
+  >>> actor.getControl(name="addusers.widgets.principals:list").value = ['zojax.pf01', 'zojax.pf02']
+  >>> actor.getControl('Add Members').click()
+  >>> actor.getLink('Members').click()
+  >>> actor.getLink('Manage members').click()
+  >>> actor.getControl(name="table.members.ids:list").value = ['zojax.pf01']
+  >>> actor.getControl('Change to manager role').click()
+
+  >>> actor.open("http://localhost/portal/companies/company/context.html/content/")
+  >>> actor.getControl(name="form.widgets.type:list").value = ['open']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+
+  >>> actor.getLink('Workspaces').click()
+  >>> actor.getControl(name="workspaces.widgets.workspaces:list").value = [
+  ...     'blog', 'forum', 'projects', 'documents', 'news', 'wiki']
+  >>> actor.getControl(name="content.edit.buttons.save").click()
+
+
+  >>> actor.open('http://localhost/portal/companies/company/')
+
+  >>> print actor.contents
+  <html>
+  ...href="http://localhost/portal/companies/company/members/"...
+  ...href="http://localhost/portal/companies/company/news/"...
+  ...href="http://localhost/portal/companies/company/documents/"...
+  ...href="http://localhost/portal/companies/company/blog/"...
+  ...href="http://localhost/portal/companies/company/forum/"...
+  ...href="http://localhost/portal/companies/company/wiki/"...
+  ...href="http://localhost/portal/companies/company/projects/"...
+  </html>
+
+
+Open company
+------------
+
+Anybody can add comments, new content only by company managers and members
+
+  >>> user1.open('http://localhost/portal/companies/company/listing.html')
+  >>> print user1.contents
+  <html>
+  ...Actions...
+  ...Add content...
+  ...Add Wiki...
+  ...Manage content...
+  ...Edit Company...
+  ...Manage members...
+  ...Browse content...
+  ...Browse documents...
+  ...Notifications...
+  ...Email notifications...
+  ...Subscribe to Feeds...
+  </html>
+
+
+
+
+  >>> setSite(None)
